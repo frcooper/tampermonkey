@@ -25,6 +25,22 @@ ffmpeg -i "<copied-url>" -c copy output.mp4
 
 For playback, VLC can open the same URL.
 
+## PowerShell helper (`qvcp.ps1`)
+
+`qvcp.ps1` wraps ffmpeg so you can archive the copied stream URL with one command. It takes the clip label and the URL:
+
+```pwsh
+qvcp "Show • Episode 12" "https://example.com/path/to/master.m3u8?token=..."
+```
+
+- Saves into `X:\in\clips\YYYY-MM\` (auto-creates the month folder).
+- Sanitizes the label for filenames and appends `-1`, `-2`, … if a duplicate exists.
+- Runs `ffmpeg -c copy` so the stream is remuxed without re-encoding.
+- Records the title and original URL as `title` / `comment` metadata tags.
+- Temporarily sets the terminal title to the label to make long captures easy to identify.
+
+Drop the copied HLS/DASH URL straight into `qvcp` to build an `mp4` that’s ready for VLC, editing, or archival.
+
 ## How it decides “best”
 
 - HLS: If a master playlist (`.m3u8` with `#EXT-X-STREAM-INF`) is found, the script picks the highest‑scoring variant by resolution and bandwidth, with a codec preference order tuned for easy remux: `h264/avc1` > `vp9` > `hvc1/hev1` > `av01`.
