@@ -16,21 +16,31 @@ function qvcp {
         $safeWord = ($Word -replace '[\\\/\:\*\?\"\<\>\|]', '_').Trim()
 
         $now    = Get-Date
-        $folder = ('X:\in\clips\{0:yyyy-MM}' -f $now)
+        $folder = Join-Path 'X:\in\clips' ('{0:yyyy-MM}' -f $now)
 
-        if (-not (Test-Path -LiteralPath $folder)) {
-            New-Item -ItemType Directory -Path $folder -Force | Out-Null
+        if (-not (Test-Path -LiteralPath $folder -PathType Container)) {
+            try {
+                New-Item -ItemType Directory -Path $folder -Force -ErrorAction Stop | Out-Null
+            }
+            catch {
+                throw "Unable to access output folder '$folder' : $_"
+            }
         }
 
         $baseName   = $safeWord
-        $outputPath = Join-Path $folder ($baseName + '.mp4')
+        $baseFile   = Join-Path $folder ($baseName + '.mp4')
+        $outputPath = $baseFile
 
-        if (Test-Path -LiteralPath $outputPath) {
+        if ([System.IO.File]::Exists($baseFile)) {
             $i = 2
             do {
-                $outputPath = Join-Path $folder ("{0}-{1}.mp4" -f $baseName, $i)
+                $candidate = Join-Path $folder ("{0}-{1}.mp4" -f $baseName, $i)
+                if (-not [System.IO.File]::Exists($candidate)) {
+                    $outputPath = $candidate
+                    break
+                }
                 $i++
-            } while (Test-Path -LiteralPath $outputPath)
+            } while ($true)
         }
 
         & ffmpeg `
