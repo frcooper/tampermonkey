@@ -24,11 +24,13 @@ function qvcp {
 
         $baseName   = $safeWord
         $outputPath = Join-Path $folder ($baseName + '.mp4')
-        $i = 1
 
-        while (Test-Path -LiteralPath $outputPath) {
-            $outputPath = Join-Path $folder ("{0}-{1}.mp4" -f $baseName, $i)
-            $i++
+        if (Test-Path -LiteralPath $outputPath) {
+            $i = 2
+            do {
+                $outputPath = Join-Path $folder ("{0}-{1}.mp4" -f $baseName, $i)
+                $i++
+            } while (Test-Path -LiteralPath $outputPath)
         }
 
         & ffmpeg `
