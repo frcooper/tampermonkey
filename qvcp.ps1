@@ -33,14 +33,14 @@ function qvcp {
 
         if ([System.IO.File]::Exists($baseFile)) {
             $i = 2
-            do {
+            while ($true) {
                 $candidate = Join-Path $folder ("{0}-{1}.mp4" -f $baseName, $i)
                 if (-not [System.IO.File]::Exists($candidate)) {
                     $outputPath = $candidate
                     break
                 }
                 $i++
-            } while ($true)
+            }
         }
 
         & ffmpeg `
