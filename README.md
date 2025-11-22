@@ -4,6 +4,8 @@ Right‑click any playing `<video>` to instantly copy a stream URL. Normal right
 
 This userscript is hardened for real sites: keeps a master‑first strategy, prefers remux‑friendly codecs, instruments network calls from the page context (works under CSP/sandbox), runs in all frames, preserves query tokens, and never blocks native menus.
 
+Looking for a Brave Shields scriptlet version? See [`brave-scriptlet.md`](brave-scriptlet.md).
+
 ## Install
 
 - Firefox: Tampermonkey, Violentmonkey, or FireMonkey.
